@@ -50,14 +50,52 @@
                         </div>
                     </div>
 
-                    <!-- 販管費（固定費） -->
-                    <div class="mb-8">
-                        <div class="flex justify-between items-center mb-2">
-                            <label class="text-sm font-medium text-gray-700">販管費 (固定費)</label>
-                            <span id="sgaValue" class="font-bold text-lg text-blue-700">250万円</span>
+                    <!-- 販管費（固定費）内訳 -->
+                    <div class="mb-8 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                        <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-200">
+                            <label class="font-bold text-gray-800">販管費 (固定費) 合計</label>
+                            <span id="sgaValue" class="font-bold text-xl text-blue-700">250万円</span>
                         </div>
-                        <input type="range" id="inputSga" min="0" max="2000" step="1" value="250" 
-                               class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600 block">
+                        
+                        <!-- 人件費 -->
+                        <div class="mb-4">
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="text-xs font-medium text-gray-600">人件費 (給与＋法定福利費＋福利厚生費)</label>
+                                <span id="sgaPersonnelValue" class="font-semibold text-sm text-blue-600">150万円</span>
+                            </div>
+                            <input type="range" id="inputSgaPersonnel" min="0" max="2000" step="1" value="150" 
+                                   class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-500 block">
+                        </div>
+
+                        <!-- 水道光熱費 -->
+                        <div class="mb-4">
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="text-xs font-medium text-gray-600">水道光熱費</label>
+                                <span id="sgaUtilityValue" class="font-semibold text-sm text-blue-600">20万円</span>
+                            </div>
+                            <input type="range" id="inputSgaUtility" min="0" max="500" step="1" value="20" 
+                                   class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-500 block">
+                        </div>
+
+                        <!-- 減価償却費 -->
+                        <div class="mb-4">
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="text-xs font-medium text-gray-600">減価償却費</label>
+                                <span id="sgaDepreciationValue" class="font-semibold text-sm text-blue-600">30万円</span>
+                            </div>
+                            <input type="range" id="inputSgaDepreciation" min="0" max="1000" step="1" value="30" 
+                                   class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-500 block">
+                        </div>
+
+                        <!-- その他 -->
+                        <div class="mb-2">
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="text-xs font-medium text-gray-600">その他</label>
+                                <span id="sgaOtherValue" class="font-semibold text-sm text-blue-600">50万円</span>
+                            </div>
+                            <input type="range" id="inputSgaOther" min="0" max="1000" step="1" value="50" 
+                                   class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-500 block">
+                        </div>
                     </div>
 
                     <hr class="my-6 border-gray-100">
@@ -125,13 +163,20 @@
         const inputs = {
             sales: document.getElementById('inputSales'),
             cogs: document.getElementById('inputCogs'),
-            sga: document.getElementById('inputSga')
+            sgaPersonnel: document.getElementById('inputSgaPersonnel'),
+            sgaUtility: document.getElementById('inputSgaUtility'),
+            sgaDepreciation: document.getElementById('inputSgaDepreciation'),
+            sgaOther: document.getElementById('inputSgaOther')
         };
 
         const displays = {
             sales: document.getElementById('salesValue'),
             cogs: document.getElementById('cogsValue'),
             sga: document.getElementById('sgaValue'),
+            sgaPersonnel: document.getElementById('sgaPersonnelValue'),
+            sgaUtility: document.getElementById('sgaUtilityValue'),
+            sgaDepreciation: document.getElementById('sgaDepreciationValue'),
+            sgaOther: document.getElementById('sgaOtherValue'),
             profit: document.getElementById('profitValue'),
             bep: document.getElementById('bepValue'),
             safetyMargin: document.getElementById('safetyMargin'),
@@ -149,7 +194,12 @@
         function calculate() {
             const sales = parseFloat(inputs.sales.value);
             const cogs = parseFloat(inputs.cogs.value);
-            const sga = parseFloat(inputs.sga.value);
+
+            const personnel = parseFloat(inputs.sgaPersonnel.value);
+            const utility = parseFloat(inputs.sgaUtility.value);
+            const depreciation = parseFloat(inputs.sgaDepreciation.value);
+            const other = parseFloat(inputs.sgaOther.value);
+            const sga = personnel + utility + depreciation + other;
 
             const vRatio = cogs / sales;
             const mRatio = 1 - vRatio;
@@ -164,6 +214,11 @@
 
             const sm = sales > 0 ? ((sales - bep) / sales) * 100 : 0;
             const bepRatio = sales > 0 ? (bep / sales) * 100 : 0;
+
+            displays.sgaPersonnel.innerText = formatYen(personnel);
+            displays.sgaUtility.innerText = formatYen(utility);
+            displays.sgaDepreciation.innerText = formatYen(depreciation);
+            displays.sgaOther.innerText = formatYen(other);
 
             updateUI(sales, cogs, sga, profit, bep, mRatio, sm, bepRatio);
             updateChart(sales, cogs, sga, bep);
