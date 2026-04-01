@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>損益分岐点グラフィカルシュミレーター</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen p-4 md:p-8">
+    <div class="max-w-6xl mx-auto">
+        <header class="mb-8">
+            <h1 class="text-3xl font-extrabold text-gray-900">損益分岐点シミュレーター</h1>
+            <p class="text-gray-500 mt-2">スライダーを動かして、利益構造の変化をシミュレーションしましょう。</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- 左側：コントロールパネル -->
+            <div class="lg:col-span-5 space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <h2 class="text-xl font-bold mb-6 flex items-center">
+                        <span class="bg-blue-100 text-blue-600 p-2 rounded-lg mr-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M11.49 3.17c-.38-3.9-5.59-3.9-5.97 0l-1.1 11.33c-.2.2.14.3.4.15l2.63-1.5c.34-.2.78-.2 1.13 0l2.63 1.5c.26.15.6.05.4-.15l-1.1-11.33zM15 10c0 2.76-2.24 5-5 5s-5-2.24-5-5 2.24-5 5-5 5 2.24 5 5z" />
+                            </svg>
+                        </span>
+                        入力設定 (単位: 万円)
+                    </h2>
+
+                    <!-- 売上高 -->
+                    <div class="mb-8">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-sm font-medium text-gray-700">現在の売上高</label>
+                            <span id="salesValue" class="font-bold text-lg text-blue-700">1,000万円</span>
+                        </div>
+                        <input type="range" id="inputSales" min="100" max="5000" step="1" value="1000" 
+                               class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600 block">
+                    </div>
+
+                    <!-- 売上原価（変動費） -->
+                    <div class="mb-8">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-sm font-medium text-gray-700">売上原価 (変動費)</label>
+                            <span id="cogsValue" class="font-bold text-lg text-blue-700">600万円</span>
+                        </div>
+                        <input type="range" id="inputCogs" min="0" max="4000" step="1" value="600" 
+                               class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600 block">
+                        <div class="text-[10px] text-gray-400 mt-1 flex justify-between">
+                            <span id="cogsRatioText">原価率: 60%</span>
+                        </div>
+                    </div>
+
+                    <!-- 販管費（固定費） -->
+                    <div class="mb-8">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-sm font-medium text-gray-700">販管費 (固定費)</label>
+                            <span id="sgaValue" class="font-bold text-lg text-blue-700">250万円</span>
+                        </div>
+                        <input type="range" id="inputSga" min="0" max="2000" step="1" value="250" 
+                               class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600 block">
+                    </div>
+
+                    <hr class="my-6 border-gray-100">
+
+                    <!-- 計算結果サマリー -->
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center bg-green-50 p-4 rounded-xl border border-green-100">
+                            <span class="text-sm font-semibold text-green-800">現在の営業利益</span>
+                            <span id="profitValue" class="text-xl font-black text-green-600">150万円</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-orange-50 p-4 rounded-xl border border-orange-100">
+                            <span class="text-sm font-semibold text-orange-800">損益分岐点売上</span>
+                            <span id="bepValue" class="text-xl font-black text-orange-600">625万円</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-600 p-6 rounded-2xl shadow-sm text-white">
+                    <h3 class="font-bold text-sm mb-2 opacity-80 text-center uppercase tracking-wider">経営健全度指標</h3>
+                    <div class="text-center">
+                        <div id="safetyMargin" class="text-4xl font-black mb-1">37.5%</div>
+                        <div class="text-xs opacity-80">安全余裕率</div>
+                        <div class="mt-4 h-2 bg-blue-400 rounded-full overflow-hidden">
+                            <div id="safetyBar" class="h-full bg-white transition-all duration-500" style="width: 37.5%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右側：グラフィカルチャート -->
+            <div class="lg:col-span-7 flex flex-col gap-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex-grow min-h-[450px]">
+                    <h2 class="text-xl font-bold mb-4">損益分岐点分析グラフ</h2>
+                    <div class="relative h-[380px] w-full">
+                        <canvas id="bepChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 text-center">
+                        <p class="text-xs text-gray-500 mb-1">限界利益率</p>
+                        <p id="marginalProfitRatio" class="text-2xl font-bold text-gray-800">40.0%</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 text-center">
+                        <p class="text-xs text-gray-500 mb-1">損益分岐点比率</p>
+                        <p id="bepRatio" class="text-2xl font-bold text-gray-800">62.5%</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 text-center">
+                        <p class="text-xs text-gray-500 mb-1">収益性ステータス</p>
+                        <p id="statusText" class="text-lg font-bold text-green-500 italic">黒字経営</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="mt-12 text-center text-gray-400 text-sm">
+            <p>※本シミュレーターでは「売上原価＝変動費」「販管費＝固定費」として簡略化して計算しています。</p>
+        </footer>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('bepChart').getContext('2d');
+        let chart;
+
+        const inputs = {
+            sales: document.getElementById('inputSales'),
+            cogs: document.getElementById('inputCogs'),
+            sga: document.getElementById('inputSga')
+        };
+
+        const displays = {
+            sales: document.getElementById('salesValue'),
+            cogs: document.getElementById('cogsValue'),
+            sga: document.getElementById('sgaValue'),
+            profit: document.getElementById('profitValue'),
+            bep: document.getElementById('bepValue'),
+            safetyMargin: document.getElementById('safetyMargin'),
+            safetyBar: document.getElementById('safetyBar'),
+            cogsRatio: document.getElementById('cogsRatioText'),
+            marginalRatio: document.getElementById('marginalProfitRatio'),
+            bepRatio: document.getElementById('bepRatio'),
+            status: document.getElementById('statusText')
+        };
+
+        function formatYen(value) {
+            return value.toLocaleString() + '万円';
+        }
+
+        function calculate() {
+            const sales = parseFloat(inputs.sales.value);
+            const cogs = parseFloat(inputs.cogs.value);
+            const sga = parseFloat(inputs.sga.value);
+
+            const vRatio = cogs / sales;
+            const mRatio = 1 - vRatio;
+            const profit = sales - (cogs + sga);
+            
+            let bep = 0;
+            if (mRatio > 0) {
+                bep = sga / mRatio;
+            } else {
+                bep = Infinity;
+            }
+
+            const sm = sales > 0 ? ((sales - bep) / sales) * 100 : 0;
+            const bepRatio = sales > 0 ? (bep / sales) * 100 : 0;
+
+            updateUI(sales, cogs, sga, profit, bep, mRatio, sm, bepRatio);
+            updateChart(sales, cogs, sga, bep);
+        }
+
+        function updateUI(sales, cogs, sga, profit, bep, mRatio, sm, bepRatio) {
+            displays.sales.innerText = formatYen(sales);
+            displays.cogs.innerText = formatYen(cogs);
+            displays.sga.innerText = formatYen(sga);
+            displays.profit.innerText = formatYen(profit);
+            displays.bep.innerText = isFinite(bep) ? formatYen(Math.round(bep)) : '測定不能';
+            
+            displays.cogsRatio.innerText = `原価率: ${( (cogs/sales)*100 ).toFixed(1)}%`;
+            displays.marginalRatio.innerText = `${(mRatio * 100).toFixed(1)}%`;
+            displays.bepRatio.innerText = isFinite(bepRatio) ? `${bepRatio.toFixed(1)}%` : '-%';
+            
+            const safetyVal = Math.max(-100, Math.min(100, sm));
+            displays.safetyMargin.innerText = isFinite(sm) ? `${sm.toFixed(1)}%` : '-%';
+            displays.safetyBar.style.width = `${Math.max(0, safetyVal)}%`;
+
+            if (profit > 0) {
+                displays.status.innerText = '黒字経営';
+                displays.status.className = 'text-lg font-bold text-green-500 italic';
+                displays.profit.className = 'text-xl font-black text-green-600';
+            } else if (profit === 0) {
+                displays.status.innerText = '損益トントン';
+                displays.status.className = 'text-lg font-bold text-gray-500 italic';
+                displays.profit.className = 'text-xl font-black text-gray-600';
+            } else {
+                displays.status.innerText = '赤字経営';
+                displays.status.className = 'text-lg font-bold text-red-500 italic';
+                displays.profit.className = 'text-xl font-black text-red-600';
+            }
+        }
+
+        function updateChart(sales, cogs, sga, bep) {
+            const maxX = Math.max(sales * 1.5, bep * 1.2, 500);
+            const vRatio = cogs / sales;
+            
+            chart.data.labels = [0, maxX];
+            chart.data.datasets[0].data = [0, maxX];
+            chart.data.datasets[1].data = [sga, vRatio * maxX + sga];
+            chart.data.datasets[2].data = [sga, sga];
+
+            if (isFinite(bep) && bep <= maxX) {
+                chart.data.datasets[3].data = [{x: bep, y: bep}];
+            } else {
+                chart.data.datasets[3].data = [];
+            }
+            chart.update('none');
+        }
+
+        function initChart() {
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [0, 2000],
+                    datasets: [
+                        { label: '売上高', data: [0, 2000], borderColor: '#3b82f6', borderWidth: 3, pointRadius: 0, fill: false },
+                        { label: '総費用', data: [250, 1450], borderColor: '#ef4444', borderWidth: 3, pointRadius: 0, fill: false },
+                        { label: '固定費', data: [250, 250], borderColor: '#94a3b8', borderWidth: 1, borderDash: [5, 5], pointRadius: 0, fill: false },
+                        { label: '損益分岐点', data: [], backgroundColor: '#f59e0b', borderColor: '#f59e0b', pointRadius: 6, pointHoverRadius: 8, showLine: false, type: 'scatter' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { type: 'linear', position: 'bottom', title: { display: true, text: '売上高 (万円)' }, min: 0 },
+                        y: { title: { display: true, text: '金額 (万円)' }, min: 0 }
+                    },
+                    plugins: {
+                        legend: { position: 'top', labels: { usePointStyle: true, padding: 20 } }
+                    }
+                }
+            });
+        }
+
+        Object.values(inputs).forEach(input => {
+            input.addEventListener('input', calculate);
+        });
+
+        window.onload = () => {
+            initChart();
+            calculate();
+        };
+    </script>
+</body>
+</html>
