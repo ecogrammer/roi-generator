@@ -31,7 +31,10 @@
                     <div class="mb-8">
                         <div class="flex justify-between items-center mb-2">
                             <label class="text-sm font-medium text-gray-700">現在の売上高</label>
-                            <span id="salesValue" class="font-bold text-lg text-blue-700">1,000万円</span>
+                            <div class="flex items-center">
+                                <input type="number" id="numSales" value="1000" class="w-24 text-right font-bold text-lg text-blue-700 bg-white border border-gray-300 rounded px-2 py-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent mr-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                                <span class="font-bold text-lg text-blue-700">万円</span>
+                            </div>
                         </div>
                         <input type="range" id="inputSales" min="100" max="5000" step="1" value="1000" 
                                class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600 block">
@@ -41,7 +44,10 @@
                     <div class="mb-8">
                         <div class="flex justify-between items-center mb-2">
                             <label class="text-sm font-medium text-gray-700">売上原価 (変動費)</label>
-                            <span id="cogsValue" class="font-bold text-lg text-blue-700">600万円</span>
+                            <div class="flex items-center">
+                                <input type="number" id="numCogs" value="600" class="w-24 text-right font-bold text-lg text-blue-700 bg-white border border-gray-300 rounded px-2 py-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent mr-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                                <span class="font-bold text-lg text-blue-700">万円</span>
+                            </div>
                         </div>
                         <input type="range" id="inputCogs" min="0" max="4000" step="1" value="600" 
                                class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600 block">
@@ -61,7 +67,10 @@
                         <div class="mb-4">
                             <div class="flex justify-between items-center mb-1">
                                 <label class="text-xs font-medium text-gray-600">人件費 (給与＋法定福利費＋福利厚生費)</label>
-                                <span id="sgaPersonnelValue" class="font-semibold text-sm text-blue-600">150万円</span>
+                                <div class="flex items-center">
+                                    <input type="number" id="numSgaPersonnel" value="150" class="w-20 text-right font-semibold text-sm text-blue-600 bg-white border border-gray-300 rounded px-1 py-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent mr-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                                    <span class="font-semibold text-sm text-blue-600">万円</span>
+                                </div>
                             </div>
                             <input type="range" id="inputSgaPersonnel" min="0" max="2000" step="1" value="150" 
                                    class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-500 block">
@@ -71,7 +80,10 @@
                         <div class="mb-4">
                             <div class="flex justify-between items-center mb-1">
                                 <label class="text-xs font-medium text-gray-600">水道光熱費</label>
-                                <span id="sgaUtilityValue" class="font-semibold text-sm text-blue-600">20万円</span>
+                                <div class="flex items-center">
+                                    <input type="number" id="numSgaUtility" value="20" class="w-20 text-right font-semibold text-sm text-blue-600 bg-white border border-gray-300 rounded px-1 py-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent mr-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                                    <span class="font-semibold text-sm text-blue-600">万円</span>
+                                </div>
                             </div>
                             <input type="range" id="inputSgaUtility" min="0" max="500" step="1" value="20" 
                                    class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-500 block">
@@ -81,7 +93,10 @@
                         <div class="mb-4">
                             <div class="flex justify-between items-center mb-1">
                                 <label class="text-xs font-medium text-gray-600">減価償却費</label>
-                                <span id="sgaDepreciationValue" class="font-semibold text-sm text-blue-600">30万円</span>
+                                <div class="flex items-center">
+                                    <input type="number" id="numSgaDepreciation" value="30" class="w-20 text-right font-semibold text-sm text-blue-600 bg-white border border-gray-300 rounded px-1 py-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent mr-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                                    <span class="font-semibold text-sm text-blue-600">万円</span>
+                                </div>
                             </div>
                             <input type="range" id="inputSgaDepreciation" min="0" max="1000" step="1" value="30" 
                                    class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-500 block">
@@ -91,7 +106,10 @@
                         <div class="mb-2">
                             <div class="flex justify-between items-center mb-1">
                                 <label class="text-xs font-medium text-gray-600">その他</label>
-                                <span id="sgaOtherValue" class="font-semibold text-sm text-blue-600">50万円</span>
+                                <div class="flex items-center">
+                                    <input type="number" id="numSgaOther" value="50" class="w-20 text-right font-semibold text-sm text-blue-600 bg-white border border-gray-300 rounded px-1 py-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent mr-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                                    <span class="font-semibold text-sm text-blue-600">万円</span>
+                                </div>
                             </div>
                             <input type="range" id="inputSgaOther" min="0" max="1000" step="1" value="50" 
                                    class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-500 block">
@@ -169,14 +187,17 @@
             sgaOther: document.getElementById('inputSgaOther')
         };
 
+        const numInputs = {
+            sales: document.getElementById('numSales'),
+            cogs: document.getElementById('numCogs'),
+            sgaPersonnel: document.getElementById('numSgaPersonnel'),
+            sgaUtility: document.getElementById('numSgaUtility'),
+            sgaDepreciation: document.getElementById('numSgaDepreciation'),
+            sgaOther: document.getElementById('numSgaOther')
+        };
+
         const displays = {
-            sales: document.getElementById('salesValue'),
-            cogs: document.getElementById('cogsValue'),
             sga: document.getElementById('sgaValue'),
-            sgaPersonnel: document.getElementById('sgaPersonnelValue'),
-            sgaUtility: document.getElementById('sgaUtilityValue'),
-            sgaDepreciation: document.getElementById('sgaDepreciationValue'),
-            sgaOther: document.getElementById('sgaOtherValue'),
             profit: document.getElementById('profitValue'),
             bep: document.getElementById('bepValue'),
             safetyMargin: document.getElementById('safetyMargin'),
@@ -192,16 +213,16 @@
         }
 
         function calculate() {
-            const sales = parseFloat(inputs.sales.value);
-            const cogs = parseFloat(inputs.cogs.value);
+            const sales = parseFloat(numInputs.sales.value) || 0;
+            const cogs = parseFloat(numInputs.cogs.value) || 0;
 
-            const personnel = parseFloat(inputs.sgaPersonnel.value);
-            const utility = parseFloat(inputs.sgaUtility.value);
-            const depreciation = parseFloat(inputs.sgaDepreciation.value);
-            const other = parseFloat(inputs.sgaOther.value);
+            const personnel = parseFloat(numInputs.sgaPersonnel.value) || 0;
+            const utility = parseFloat(numInputs.sgaUtility.value) || 0;
+            const depreciation = parseFloat(numInputs.sgaDepreciation.value) || 0;
+            const other = parseFloat(numInputs.sgaOther.value) || 0;
             const sga = personnel + utility + depreciation + other;
 
-            const vRatio = cogs / sales;
+            const vRatio = sales > 0 ? cogs / sales : 0;
             const mRatio = 1 - vRatio;
             const profit = sales - (cogs + sga);
             
@@ -215,23 +236,16 @@
             const sm = sales > 0 ? ((sales - bep) / sales) * 100 : 0;
             const bepRatio = sales > 0 ? (bep / sales) * 100 : 0;
 
-            displays.sgaPersonnel.innerText = formatYen(personnel);
-            displays.sgaUtility.innerText = formatYen(utility);
-            displays.sgaDepreciation.innerText = formatYen(depreciation);
-            displays.sgaOther.innerText = formatYen(other);
-
             updateUI(sales, cogs, sga, profit, bep, mRatio, sm, bepRatio);
             updateChart(sales, cogs, sga, bep);
         }
 
         function updateUI(sales, cogs, sga, profit, bep, mRatio, sm, bepRatio) {
-            displays.sales.innerText = formatYen(sales);
-            displays.cogs.innerText = formatYen(cogs);
             displays.sga.innerText = formatYen(sga);
             displays.profit.innerText = formatYen(profit);
             displays.bep.innerText = isFinite(bep) ? formatYen(Math.round(bep)) : '測定不能';
             
-            displays.cogsRatio.innerText = `原価率: ${( (cogs/sales)*100 ).toFixed(1)}%`;
+            displays.cogsRatio.innerText = sales > 0 ? `原価率: ${( (cogs/sales)*100 ).toFixed(1)}%` : '原価率: -%';
             displays.marginalRatio.innerText = `${(mRatio * 100).toFixed(1)}%`;
             displays.bepRatio.innerText = isFinite(bepRatio) ? `${bepRatio.toFixed(1)}%` : '-%';
             
@@ -297,8 +311,15 @@
             });
         }
 
-        Object.values(inputs).forEach(input => {
-            input.addEventListener('input', calculate);
+        Object.keys(inputs).forEach(key => {
+            inputs[key].addEventListener('input', (e) => {
+                numInputs[key].value = e.target.value;
+                calculate();
+            });
+            numInputs[key].addEventListener('input', (e) => {
+                inputs[key].value = e.target.value;
+                calculate();
+            });
         });
 
         window.onload = () => {
