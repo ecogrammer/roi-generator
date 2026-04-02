@@ -152,7 +152,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 text-center">
                         <p class="text-xs text-gray-500 mb-1">限界利益率</p>
                         <p id="marginalProfitRatio" class="text-2xl font-bold text-gray-800">40.0%</p>
@@ -162,6 +162,10 @@
                         <p id="bepRatio" class="text-2xl font-bold text-gray-800">62.5%</p>
                     </div>
                     <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 text-center">
+                        <p class="text-xs text-gray-500 mb-1">FL比率</p>
+                        <p id="flRatio" class="text-2xl font-bold text-gray-800">75.0%</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 text-center col-span-2 md:col-span-1">
                         <p class="text-xs text-gray-500 mb-1">収益性ステータス</p>
                         <p id="statusText" class="text-lg font-bold text-green-500 italic">黒字経営</p>
                     </div>
@@ -205,6 +209,7 @@
             cogsRatio: document.getElementById('cogsRatioText'),
             marginalRatio: document.getElementById('marginalProfitRatio'),
             bepRatio: document.getElementById('bepRatio'),
+            flRatio: document.getElementById('flRatio'),
             status: document.getElementById('statusText')
         };
 
@@ -235,12 +240,13 @@
 
             const sm = sales > 0 ? ((sales - bep) / sales) * 100 : 0;
             const bepRatio = sales > 0 ? (bep / sales) * 100 : 0;
+            const flRatio = sales > 0 ? ((cogs + personnel) / sales) * 100 : 0;
 
-            updateUI(sales, cogs, sga, profit, bep, mRatio, sm, bepRatio);
+            updateUI(sales, cogs, sga, profit, bep, mRatio, sm, bepRatio, flRatio);
             updateChart(sales, cogs, sga, bep);
         }
 
-        function updateUI(sales, cogs, sga, profit, bep, mRatio, sm, bepRatio) {
+        function updateUI(sales, cogs, sga, profit, bep, mRatio, sm, bepRatio, flRatio) {
             displays.sga.innerText = formatYen(sga);
             displays.profit.innerText = formatYen(profit);
             displays.bep.innerText = isFinite(bep) ? formatYen(Math.round(bep)) : '測定不能';
@@ -248,6 +254,17 @@
             displays.cogsRatio.innerText = sales > 0 ? `原価率: ${( (cogs/sales)*100 ).toFixed(1)}%` : '原価率: -%';
             displays.marginalRatio.innerText = `${(mRatio * 100).toFixed(1)}%`;
             displays.bepRatio.innerText = isFinite(bepRatio) ? `${bepRatio.toFixed(1)}%` : '-%';
+            displays.flRatio.innerText = isFinite(flRatio) && sales > 0 ? `${flRatio.toFixed(1)}%` : '-%';
+            
+            if (sales === 0) {
+                displays.flRatio.className = 'text-2xl font-bold text-gray-800';
+            } else if (flRatio <= 60) {
+                displays.flRatio.className = 'text-2xl font-bold text-green-600';
+            } else if (flRatio <= 65) {
+                displays.flRatio.className = 'text-2xl font-bold text-yellow-500';
+            } else {
+                displays.flRatio.className = 'text-2xl font-bold text-red-600';
+            }
             
             const safetyVal = Math.max(-100, Math.min(100, sm));
             displays.safetyMargin.innerText = isFinite(sm) ? `${sm.toFixed(1)}%` : '-%';
