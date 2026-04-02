@@ -286,14 +286,22 @@
         }
 
         function initChart() {
+            const gradientFixed = ctx.createLinearGradient(0, 0, 0, 380);
+            gradientFixed.addColorStop(0, 'rgba(148, 163, 184, 0.4)'); // slate-400
+            gradientFixed.addColorStop(1, 'rgba(148, 163, 184, 0.05)');
+
+            const gradientVariable = ctx.createLinearGradient(0, 0, 0, 380);
+            gradientVariable.addColorStop(0, 'rgba(239, 68, 68, 0.3)'); // red-500
+            gradientVariable.addColorStop(1, 'rgba(239, 68, 68, 0.05)');
+
             chart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: [0, 2000],
                     datasets: [
                         { label: '売上高', data: [0, 2000], borderColor: '#3b82f6', borderWidth: 3, pointRadius: 0, fill: false },
-                        { label: '総費用', data: [250, 1450], borderColor: '#ef4444', borderWidth: 3, pointRadius: 0, fill: false },
-                        { label: '固定費', data: [250, 250], borderColor: '#94a3b8', borderWidth: 1, borderDash: [5, 5], pointRadius: 0, fill: false },
+                        { label: '総費用', data: [250, 1450], borderColor: '#ef4444', borderWidth: 3, pointRadius: 0, fill: 2, backgroundColor: gradientVariable },
+                        { label: '固定費', data: [250, 250], borderColor: '#94a3b8', borderWidth: 2, borderDash: [5, 5], pointRadius: 0, fill: 'origin', backgroundColor: gradientFixed },
                         { label: '損益分岐点', data: [], backgroundColor: '#f59e0b', borderColor: '#f59e0b', pointRadius: 6, pointHoverRadius: 8, showLine: false, type: 'scatter' }
                     ]
                 },
