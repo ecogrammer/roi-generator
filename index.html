@@ -294,6 +294,49 @@
             gradientVariable.addColorStop(0, 'rgba(239, 68, 68, 0.3)'); // red-500
             gradientVariable.addColorStop(1, 'rgba(239, 68, 68, 0.05)');
 
+            const areaTextPlugin = {
+                id: 'areaText',
+                afterDatasetsDraw: (chart) => {
+                    const { ctx, chartArea } = chart;
+                    if (!chartArea) return;
+                    
+                    const datasetTotal = chart.data.datasets[1].data;
+                    const datasetFixed = chart.data.datasets[2].data;
+                    if (datasetTotal.length < 2 || datasetFixed.length < 2) return;
+
+                    const right = chartArea.right;
+                    const top = chartArea.top;
+                    const bottom = chartArea.bottom;
+
+                    // グラフの一番右（最大X）におけるY座標を取得
+                    const totalY = chart.scales.y.getPixelForValue(datasetTotal[1]);
+                    const fixedY = chart.scales.y.getPixelForValue(datasetFixed[1]);
+
+                    // 画面外にはみ出ないようにクリッピング
+                    const safeTotalY = Math.max(top, totalY);
+                    const safeFixedY = Math.min(bottom, fixedY);
+
+                    ctx.save();
+                    ctx.font = 'bold 12px sans-serif';
+                    ctx.textAlign = 'right';
+                    ctx.textBaseline = 'middle';
+
+                    // 変動費エリアの文字
+                    if (fixedY - safeTotalY > 25) {
+                        ctx.fillStyle = 'rgba(220, 38, 38, 0.8)'; // 赤字
+                        ctx.fillText('変動費', right - 15, (safeTotalY + fixedY) / 2);
+                    }
+
+                    // 固定費エリアの文字
+                    if (bottom - safeFixedY > 25) {
+                        ctx.fillStyle = 'rgba(71, 85, 105, 0.8)'; // グレー字
+                        ctx.fillText('固定費', right - 15, (safeFixedY + bottom) / 2);
+                    }
+
+                    ctx.restore();
+                }
+            };
+
             chart = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -315,7 +358,8 @@
                     plugins: {
                         legend: { position: 'top', labels: { usePointStyle: true, padding: 20 } }
                     }
-                }
+                },
+                plugins: [areaTextPlugin]
             });
         }
 
